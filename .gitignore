@@ -1,0 +1,21 @@
+app/main/.env
+app/main/credentials.json
+app/main/token.pickle
+app/cron/test.txt
+# OS X
+.history
+.DS_Store
+
+# IntelliJ
+.idea_modules
+*.iml
+*.iws
+*.ipr
+.idea/
+build/
+*/build/
+out/
+
+lib/
+../__pycache__/
+__pycache__/

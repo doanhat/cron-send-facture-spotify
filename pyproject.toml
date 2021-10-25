@@ -1,0 +1,27 @@
+[tool.poetry]
+name = "automatically-send-facture-spotify"
+version = "0.1.0"
+description = ""
+authors = ["Nhat-Minh DOAN"]
+
+[tool.poetry.dependencies]
+python = "^3.7"
+google-api-python-client = "^2.27.0"
+google-auth-httplib2 = "^0.1.0"
+google-auth-oauthlib = "^0.4.6"
+python-dotenv = "^0.19.1"
+html2text = "^2020.1.16"
+beautifulsoup4 = "^4.10.0"
+lxml = "^4.6.3"
+fbchat = "^1.9.7"
+
+[tool.poetry.dev-dependencies]
+
+[build-system]
+requires = ["poetry-core>=1.0.0"]
+build-backend = "poetry.core.masonry.api"
+
+[[tool.poetry.source]]
+name = "pypi_source"
+url = "https://pypi.org/simple/"
+default = true
