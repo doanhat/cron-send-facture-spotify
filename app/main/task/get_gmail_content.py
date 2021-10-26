@@ -27,9 +27,9 @@ def get_google_service():
 
     # The file token.pickle contains the user access token.
     # Check if it exists
-    if os.path.exists('token.pickle'):
+    if os.path.exists('config/google/API/token.pickle'):
         # Read the token from the file and store it in the variable creds
-        with open('token.pickle', 'rb') as token:
+        with open('config/google/API/token.pickle', 'rb') as token:
             creds = pickle.load(token)
 
     # If credentials are not available or are invalid, ask the user to log in.
@@ -37,11 +37,11 @@ def get_google_service():
         if creds and creds.expired and creds.refresh_token:
             creds.refresh(Request())
         else:
-            flow = InstalledAppFlow.from_client_secrets_file('credentials.json', SCOPES)
+            flow = InstalledAppFlow.from_client_secrets_file('config/google/API/credentials.json', SCOPES)
             creds = flow.run_local_server(port=0)
 
         # Save the access token in token.pickle file for the next run
-        with open('token.pickle', 'wb') as token:
+        with open('config/google/API/token.pickle', 'wb') as token:
             pickle.dump(creds, token)
 
     # Connect to the Gmail API
@@ -85,7 +85,7 @@ def get_first_mail_content(service, sender, subject, words: list):
     messages = result.get('messages')
 
     # messages is a list of dictionaries where each dictionary contains a message id.
-
+    # logger.info()
     # iterate through all the messages
     for msg in messages:
         # Get the message from its id

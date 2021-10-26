@@ -9,7 +9,7 @@ logging.basicConfig(level=logging.INFO,
                     format='%(levelname)s: %(message)s',
                     datefmt='%d-%b-%Y %H:%M:%S')
 logger = logging.getLogger()
-load_dotenv()
+load_dotenv("config/facebook/fbchat/.env")
 
 user = os.getenv('USER_EMAIL_ADDRESS')
 password = os.getenv('USER_PASSWORD')
@@ -37,4 +37,5 @@ def send_msg_to_user(client, user_id, message):
     client.logout()
 
 
+logger.info(user)
 # send_msg_to_group(get_client(), thread_id, "Aloooo")
