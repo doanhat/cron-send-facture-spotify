@@ -1,5 +1,6 @@
 FROM python:3.7.2
-WORKDIR /usr/src/app
+
+WORKDIR /usr/src
 
 RUN apt-get update
 
@@ -10,8 +11,10 @@ RUN pip install --no-cache-dir -r requirements.txt
 
 COPY ./app ./app
 
-RUN chmod +x app/test/cron/test-cron.sh
-#RUN chmod +x app/main/cron/send-facture-spotify.sh
+ENV PYTHONPATH "${PYTHONPATH}:`pwd`"
 
-CMD ["./app/test/cron/test-cron.sh"]
-#CMD ["./app/main/cron/send-facture-spotif.sh"]
+#RUN chmod +x app/test/cron/test-cron.sh
+RUN chmod +x app/main/cron/send-facture-spotify.sh
+
+#CMD ["./app/test/cron/test-cron.sh"]
+CMD ["python","app/main/send_facture.py"]

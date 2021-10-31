@@ -1,7 +1,7 @@
-app/main/config/facebook/fbchat/.env
 app/main/config/google/API/credentials.json
 app/main/config/google/API/token.pickle
 app/test/cron/test.txt
+app/main/config/messenger/session.json
 # OS X
 .history
 .DS_Store
