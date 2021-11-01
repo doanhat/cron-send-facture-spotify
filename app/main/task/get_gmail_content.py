@@ -2,6 +2,7 @@
 import logging
 from datetime import date, timedelta
 
+from google.auth.exceptions import RefreshError
 from googleapiclient.discovery import build
 from google_auth_oauthlib.flow import InstalledAppFlow
 from google.auth.transport.requests import Request
@@ -35,7 +36,12 @@ def get_google_service():
     # If credentials are not available or are invalid, ask the user to log in.
     if not creds or not creds.valid:
         if creds and creds.expired and creds.refresh_token:
-            creds.refresh(Request())
+            try:
+                creds.refresh(Request())
+            except RefreshError as re:
+                logger.error("Credentials could not be refreshed, possibly the authorization was revoked by the user.")
+                os.unlink('token.pickle')
+                return
         else:
             flow = InstalledAppFlow.from_client_secrets_file('app/main/config/google/API/credentials.json', SCOPES)
             creds = flow.run_local_server(port=0)

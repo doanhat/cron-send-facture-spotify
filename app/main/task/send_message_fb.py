@@ -10,9 +10,9 @@ logging.basicConfig(level=logging.INFO,
                     datefmt='%d-%b-%Y %H:%M:%S')
 logger = logging.getLogger()
 
-user = os.getenv('USER_EMAIL_ADDRESS')
-password = os.getenv('USER_PASSWORD')
-thread_id = int(os.getenv('THREAD_ID'))
+user = os.getenv('FB_USER_EMAIL_ADDRESS')
+password = os.getenv('FB_USER_PASSWORD')
+thread_id = int(os.getenv('FB_THREAD_ID'))
 
 
 def get_client():

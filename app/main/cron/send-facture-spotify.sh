@@ -12,7 +12,7 @@ if [ "$TOMORROW" -eq 01 ]; then
 	# shellcheck disable=SC2164
 	# shellcheck disable=SC2046
 	# TODO : export thread_in in environment variable type number
-	/usr/local/bin/docker run -e USER_EMAIL_ADDRESS="$FB_USER_EMAIL_ADDRESS" -e USER_PASSWORD="$FB_USER_PASSWORD" -e THREAD_ID=6947468915279299 cron-send-facture-spotify:latest
+	/usr/local/bin/docker run -e FB_USER_EMAIL_ADDRESS="$FB_USER_EMAIL_ADDRESS" -e FB_USER_PASSWORD="$FB_USER_PASSWORD" -e FB_THREAD_ID=6947468915279299 cron-send-facture-spotify:latest
 	exit
 else
   echo "Tomorrow is not 01"
