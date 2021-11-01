@@ -135,6 +135,11 @@ Now, the cron job should run the `test-cron.sh` script every minute which get th
 
 ### 5. Voilà, all set !!
 
+## Possible improvements
+- There is a bug (?) when passing the environment variable `FB_THREAD_ID` in `docker run` command inside a bash script -> need to pass directly the value
+- Cron jobs only run when PC is in use -> find a free hosting service
+- Testing the python script is not straightforward, because the query to getting Spotify billing depends on execution date of the script and in order to be tested, messages need to be send regularly through messenger  -> seperate dev and prod environment
+- Considering using Airflow
 ## Author
 - [@doanhat](https://github.com/doanhat)
 
