@@ -1,5 +1,3 @@
-import os
-
 from app.main.task.get_gmail_content import get_first_mail_content, get_google_service
 from app.main.task.send_message_fb import send_msg_to_thread
 

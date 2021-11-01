@@ -1,20 +1,27 @@
-FROM python:3.7.2
-
-WORKDIR /usr/src
+FROM python:3.8
 
 RUN apt-get update
+RUN apt-get install -y cron
 
-RUN apt-get install -y --no-install-recommends python3-dev gcc libldap2-dev libssl-dev libsasl2-dev
-
+WORKDIR /usr/src
 COPY ./requirements.txt ./requirements.txt
-RUN pip install --no-cache-dir -r requirements.txt
-
 COPY ./app ./app
+COPY ./env ./env
 
-ENV PYTHONPATH "${PYTHONPATH}:`pwd`"
-
-#RUN chmod +x app/test/cron/test-cron.sh
+# Set up and activate virtual environment
+ENV VIRTUAL_ENV "/usr/src/venv"
+RUN python -m venv $VIRTUAL_ENV
+ENV PATH "$VIRTUAL_ENV/bin:$PATH"
+RUN . $VIRTUAL_ENV/bin/activate && pip install --no-cache-dir -r requirements.txt
 RUN chmod +x app/main/cron/send-facture-spotify.sh
 
-#CMD ["./app/test/cron/test-cron.sh"]
-CMD ["python","app/main/send_facture.py"]
+# Copy cron file to the cron.d directory
+COPY ./cronjob/cron-send-facture-spotify /etc/cron.d/cron-send-facture-spotify
+# Give execution rights on the cron job
+RUN chmod 0644 /etc/cron.d/cron-send-facture-spotify
+# Apply cron job
+RUN crontab /etc/cron.d/cron-send-facture-spotify
+# Create the log file to be able to run tail
+RUN touch /var/log/cron.log
+# Run the command on container startup
+CMD cron && tail -f /var/log/cron.log
