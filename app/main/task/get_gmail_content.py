@@ -9,7 +9,6 @@ from google.auth.transport.requests import Request
 import pickle
 import os.path
 import base64
-import email
 from bs4 import BeautifulSoup
 
 logging.basicConfig(level=logging.INFO,

@@ -1,6 +1,7 @@
 import json
 import logging
 import os
+from dotenv import load_dotenv
 
 from app.main.resource.fbchat import Client
 from app.main.resource.fbchat.models import *
@@ -10,6 +11,7 @@ logging.basicConfig(level=logging.INFO,
                     datefmt='%d-%b-%Y %H:%M:%S')
 logger = logging.getLogger()
 
+load_dotenv("env/.env")
 user = os.getenv('FB_USER_EMAIL_ADDRESS')
 password = os.getenv('FB_USER_PASSWORD')
 thread_id = int(os.getenv('FB_THREAD_ID'))
@@ -48,6 +50,3 @@ def send_msg_to_thread(message):
     with open('app/main/config/messenger/session.json', 'w') as f:
         json.dump(client.getSession(), f)
     client.logout()
-
-
-

@@ -93,6 +93,19 @@ url = "https://pypi.org/simple"
 reference = "pypi_source"
 
 [[package]]
+name = "dotenv"
+version = "0.0.5"
+description = "Handle .env files"
+category = "main"
+optional = false
+python-versions = "*"
+
+[package.source]
+type = "legacy"
+url = "https://pypi.org/simple"
+reference = "pypi_source"
+
+[[package]]
 name = "google-api-core"
 version = "2.2.1"
 description = "Google API client core library"
@@ -502,7 +515,7 @@ reference = "pypi_source"
 [metadata]
 lock-version = "1.1"
 python-versions = "^3.7"
-content-hash = "f9474ccc44a5eeda7ae64062693fbd63ddda6a4bf346ad72edd86849c4240e5a"
+content-hash = "b1570a880bfb2165212431127066424959ead859f669dfe12e8f5be7d48d0523"
 
 [metadata.files]
 aenum = [
@@ -529,6 +542,9 @@ certifi = [
 charset-normalizer = [
     {file = "charset-normalizer-2.0.7.tar.gz", hash = "sha256:e019de665e2bcf9c2b64e2e5aa025fa991da8720daa3c1138cadd2fd1856aed0"},
     {file = "charset_normalizer-2.0.7-py3-none-any.whl", hash = "sha256:f7af805c321bfa1ce6714c51f254e0d5bb5e5834039bc17db7ebe3a4cec9492b"},
+]
+dotenv = [
+    {file = "dotenv-0.0.5.tar.gz", hash = "sha256:b58d2ab3f83dbd4f8a362b21158a606bee87317a9444485566b3c8f0af847091"},
 ]
 google-api-core = [
     {file = "google-api-core-2.2.1.tar.gz", hash = "sha256:31eea0ec01ac0e3905c1dd752afbae487a2092c36f138cdccda644666caf307d"},

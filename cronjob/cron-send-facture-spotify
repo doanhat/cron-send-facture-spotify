@@ -1,0 +1,1 @@
+59 10 28-31 * * /usr/src/app/main/cron/send-facture-spotify.sh >> /var/log/cron.log 2>&1
