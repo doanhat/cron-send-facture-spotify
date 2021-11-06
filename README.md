@@ -1,4 +1,4 @@
-# Cron-send-facture-spotify
+# Self-learning project : Cron-send-facture-spotify
 
 [![hackmd-github-sync-badge](https://hackmd.io/DlraECW4Q_imvwXGCAM1Ag/badge)](https://hackmd.io/DlraECW4Q_imvwXGCAM1Ag)
 
@@ -109,20 +109,24 @@ can be checked from the Terminal by the command `mail`.
         - In `APIs and Services`, enable Gmail API
         - In `APIs and Services/OAuth Consent Screen`, enter application name and add your email to `Test users`
         - In `APIs and Services/Credentials`, create a `OAuth 2.0 Client ID` and download the JSON file, save it
-          to `app/main/config/google/API/credentials.json` (if prefer local credentials) or `Google Secret Manager` (if prefer remote credentials)
+          to `app/main/config/google/API/credentials.json` (if prefer local credentials) or `Google Secret Manager` (if
+          prefer remote credentials)
     2. Define environment variables in `env/.env`:
-       - `FB_USER_EMAIL_ADDRESS`=<fb_email_address>
-       - `FB_USER_PASSWORD`=<fb_password>
-       - `FB_THREAD_ID`=<messenger_group_id>
-         > :information_source: `<messenger_group_id>` example: `6947468915279299` is the id of https://www.facebook.com/messages/t/6947468915279299
+        - `FB_USER_EMAIL_ADDRESS`=<fb_email_address>
+        - `FB_USER_PASSWORD`=<fb_password>
+        - `FB_THREAD_ID`=<messenger_group_id>
+          > :information_source: `<messenger_group_id>` example: `6947468915279299` is the id of https://www.facebook.com/messages/t/6947468915279299
     3. If using remote credentials, perform these additional steps:
-       1. Add these environment variables  in `env/.env`:
-          - `PROJECT_ID`=<gcp_project_id>
-          - `CRE_SECRET_ID`=<gsm_credentials_id>
-          - `TOK_SECRET_ID`=<gsm_token_id>
-       2. In `Google Cloud Console/APIs and Services/Credentials`, add a `Service Account` for the project if not yet created 
-       3. In `Google Cloud Console/IAM and admin/IAM`, add `Secret Manager Secret Accessor` for the above service account
-       4. In `Google Cloud Console/Security/Secret Manager`, add the JSON credentials file whole name is `<gsm_credentials_id>`
+        1. Add these environment variables in `env/.env`:
+            - `PROJECT_ID`=<gcp_project_id>
+            - `CRE_SECRET_ID`=<gsm_credentials_id>
+            - `TOK_SECRET_ID`=<gsm_token_id>
+        2. In `Google Cloud Console/APIs and Services/Credentials`, add a `Service Account` for the project if not yet
+           created
+        3. In `Google Cloud Console/IAM and admin/IAM`, add `Secret Manager Secret Accessor` for the above service
+           account
+        4. In `Google Cloud Console/Security/Secret Manager`, add the JSON credentials file whole name
+           is `<gsm_credentials_id>`
 
 2. Build image Docker:
 
@@ -163,6 +167,35 @@ Or define it as a function or an alias inside a source shell script (for example
 ```
 
 ### 5. Voilà, all set !!
+
+### 6. Bonus : deploy with `Google Cloud Run`
+
+One limitation of crontab is that it can only be run if our machine is running, (yes we have other cron schedulers which
+anticipated this limitation, like `anacron` (deprecated for `MACOs`) or `fcron`, but since this a self-learning project,
+I would like to make it as generic and informative as possible, so it can be applied in my other projects or at least
+keep me updated with the techno), so I wanted to find some free hosting server, and because this project involves many
+GCP service, `Google Cloud Run` for Docker container is perfect with its free tier plan. From step 3, we will use `Cloud Shell` 
+#### Step 1 : Enable `Google Container Registry API` in `Google Cloud Console/APIs and Services`
+#### Step 2 : In local terminal : 
+```bash
+  docker push <docker_hub_user_name>/cron-send-facture-spotify 
+```
+#### Step 3 : In `Cloud Shell` : 
+```bash
+  docker pull <docker_hub_user_name>/cron-send-facture-spotify:latest 
+  docker tag <docker_hub_user_name>/cron-send-facture-spotify:latest <gcr_region>/<gcp_project_name>/cron-send-facture-spotify
+  docker push <cgr_region>/<gcp_project_name>/cron-send-facture-spotify
+```
+#### Step 4 : Deploy `Cloud Run` :
+https://cloud.google.com/run/docs/deploying#console
+
+:warning: set minimum instances to 1 because the container always need to be up
+
+### 7. Improvement :
+There's always enough rooms for improvement, we can take advantage of this project to learn :
+- Using Terraform to manage resources (Secret, Cloud Run instances, IAM roles, ... )
+- Using Airflow to schedule more complicated tasks
+- Using CI/CD for more reliable deployment
 
 ## Author
 
