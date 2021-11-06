@@ -3,16 +3,11 @@ import imaplib, email
 import os
 from datetime import timedelta, date
 from dotenv import load_dotenv
-import logging
 from bs4 import BeautifulSoup
-import lxml
-import unicodedata
+
+from app.main.helper.logger import logger
 
 load_dotenv()
-logging.basicConfig(level=logging.INFO,
-                    format='%(levelname)s: %(message)s',
-                    datefmt='%d-%b-%Y %H:%M:%S')
-logger = logging.getLogger()
 
 user = os.getenv('USER_EMAIL_ADDRESS')
 password = os.getenv('USER_PASSWORD')

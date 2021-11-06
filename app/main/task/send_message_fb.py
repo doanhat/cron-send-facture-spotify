@@ -1,15 +1,11 @@
 import json
 import logging
 import os
-from dotenv import load_dotenv
+from dotenv import load_dotenv, dotenv_values
 
+from app.main.helper.logger import logger
 from app.main.resource.fbchat import Client
 from app.main.resource.fbchat.models import *
-
-logging.basicConfig(level=logging.INFO,
-                    format='%(levelname)s: %(message)s',
-                    datefmt='%d-%b-%Y %H:%M:%S')
-logger = logging.getLogger()
 
 load_dotenv("env/.env")
 user = os.getenv('FB_USER_EMAIL_ADDRESS')
