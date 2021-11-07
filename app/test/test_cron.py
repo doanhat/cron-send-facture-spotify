@@ -1,12 +1,7 @@
 from datetime import datetime
 import os
 
-import logging
-
-logging.basicConfig(level=logging.INFO,
-                    format='%(levelname)s: %(message)s',
-                    datefmt='%d-%b-%Y %H:%M:%S')
-logger = logging.getLogger()
+from app.main.helper.logger import logger
 
 
 def write_file(filename, data):
@@ -22,7 +17,7 @@ def print_time():
     now = datetime.now()
     current_time = now.strftime("%H:%M:%S")
     data = "Current Time = " + current_time
-    logging.info(f"Current Time = {current_time}")
+    logger.info(f"Current Time = {current_time}")
     return data
 
 

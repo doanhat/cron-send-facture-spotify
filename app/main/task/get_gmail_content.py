@@ -1,23 +1,27 @@
-# import the required libraries
-import logging
+import json
 from datetime import date, timedelta
 
+from dotenv import load_dotenv, dotenv_values
 from google.auth.exceptions import RefreshError
+from google.cloud import secretmanager
+from google.oauth2.credentials import Credentials
 from googleapiclient.discovery import build
 from google_auth_oauthlib.flow import InstalledAppFlow
 from google.auth.transport.requests import Request
-import pickle
-import os.path
+import os
 import base64
 from bs4 import BeautifulSoup
 
-logging.basicConfig(level=logging.INFO,
-                    format='%(levelname)s: %(message)s',
-                    datefmt='%d-%b-%Y %H:%M:%S')
-logger = logging.getLogger()
+load_dotenv("env/.env")
+# Define the SCOPES. If modifying it, delete the token.json file.
+from app.main.helper.logger import logger
 
-# Define the SCOPES. If modifying it, delete the token.pickle file.
 SCOPES = ['https://www.googleapis.com/auth/gmail.readonly']
+PROJECT_ID = os.getenv('PROJECT_ID')
+CRE_SECRET_ID = os.getenv('CRE_SECRET_ID')
+TOK_SECRET_ID = os.getenv('TOK_SECRET_ID')
+
+CLIENT = secretmanager.SecretManagerServiceClient()
 
 
 def get_google_service():
@@ -25,12 +29,17 @@ def get_google_service():
     # If no valid token found, we will create one.
     creds = None
 
-    # The file token.pickle contains the user access token.
+    # Uncomment this section if using local token.json
+    # ---
+    # The file token.json contains the user access token.
     # Check if it exists
-    if os.path.exists('app/main/config/google/API/token.pickle'):
-        # Read the token from the file and store it in the variable creds
-        with open('app/main/config/google/API/token.pickle', 'rb') as token:
-            creds = pickle.load(token)
+    # if os.path.exists('app/main/config/google/API/token.json'):
+    #     # Read the token from the file and store it in the variable creds
+    #     creds = Credentials.from_authorized_user_file('app/main/config/google/API/token.json', SCOPES)
+    # ---
+
+    # Get token.json from Secret Manager
+    creds = Credentials.from_authorized_user_info(json.loads(get_secret(CLIENT, PROJECT_ID, TOK_SECRET_ID)), SCOPES)
 
     # If credentials are not available or are invalid, ask the user to log in.
     if not creds or not creds.valid:
@@ -39,19 +48,63 @@ def get_google_service():
                 creds.refresh(Request())
             except RefreshError as re:
                 logger.error("Credentials could not be refreshed, possibly the authorization was revoked by the user.")
-                os.unlink('token.pickle')
+                # uncomment if local token.json
+                # os.unlink('token.json')
+                CLIENT.delete_secret(request={"name": TOK_SECRET_ID})
                 return
         else:
-            flow = InstalledAppFlow.from_client_secrets_file('app/main/config/google/API/credentials.json', SCOPES)
+            # Uncomment this line if using local credentials.json
+            # flow = InstalledAppFlow.from_client_secrets_file('app/main/config/google/API/credentials.json', SCOPES)
+
+            flow = InstalledAppFlow.from_client_config(
+                json.loads(get_secret(CLIENT, PROJECT_ID, CRE_SECRET_ID)),
+                SCOPES)
             creds = flow.run_local_server(port=0)
 
-        # Save the access token in token.pickle file for the next run
-        with open('app/main/config/google/API/token.pickle', 'wb') as token:
-            pickle.dump(creds, token)
+        # Save the access token in token.json file for the next run
+
+        # Uncomment this section if using local token.json
+        # ---
+        # with open('app/main/config/google/API/token.json', 'w') as token:
+        #     token.write(creds.to_json())
+        # ---
+
+        add_secret(CLIENT, PROJECT_ID, TOK_SECRET_ID, creds.to_json())
 
     # Connect to the Gmail API
     service = build('gmail', 'v1', credentials=creds)
     return service
+
+
+def get_secret(client, project_id, secret_id, version_id="latest"):
+    try:
+        # Build the resource name of the secret version.
+        name = f"projects/{project_id}/secrets/{secret_id}/versions/{version_id}"
+
+        # Access the secret version.
+        response = client.access_secret_version(request={"name": name})
+        payload = response.payload.data.decode("UTF-8")
+        logger.info("---")
+        return payload
+    except Exception as e:
+        logger.error(e)
+
+
+def add_secret(client, project_id, secret_id, payload):
+    try:
+        # Build the resource name of the parent secret.
+        parent = client.secret_path(project_id, secret_id)
+
+        # Convert the string payload into a bytes. This step can be omitted if you
+        # pass in bytes instead of a str for the payload argument.
+        payload = payload.encode("UTF-8")
+
+        # Add the secret version.
+        response = client.add_secret_version(
+            request={"parent": parent, "payload": {"data": payload}}
+        )
+    except Exception as e:
+        logger.error(e)
 
 
 def generate_gmail_query(sender, subject, words):
