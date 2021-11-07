@@ -1,5 +1,6 @@
 app/main/config/google/API/credentials.json
 app/main/config/google/API/token.pickle
+app/main/config/google/API/token.json
 app/test/cron/test.txt
 app/main/config/messenger/session.json
 env/.env
@@ -20,3 +21,16 @@ out/
 lib/
 ../__pycache__/
 __pycache__/
+
+
+# Terraform
+.terraform
+*.tfstate
+*.tfstate.backup
+backend.tf
+provider.tf
+
+
+# OS X
+.history
+.DS_Store
