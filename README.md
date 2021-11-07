@@ -1,4 +1,4 @@
-# Self-learning project : Cron-send-facture-spotify
+# Self-learning project : Cron-send-receipt-spotify
 
 [![hackmd-github-sync-badge](https://hackmd.io/DlraECW4Q_imvwXGCAM1Ag/badge)](https://hackmd.io/DlraECW4Q_imvwXGCAM1Ag)
 
@@ -25,8 +25,8 @@ Family and notifies all family members within a Facebook Messenger group.
 With Terminal:
 
 ```bash=
-  git clone git@github.com:doanhat/cron-send-facture-spotify.git
-  cd cron-send-facture-spotify/
+  git clone git@github.com:doanhat/cron-send-receipt-spotify.git
+  cd cron-send-receipt-spotify/
 ```
 
 With Pycharm:
@@ -91,7 +91,7 @@ in MacOs, **within the repository folder**:
 ```
 
 An example of `<absolute_path_workdir>`:
-> `/Users/ndoan/PersoProj/cron-send-facture-spotify`
+> `/Users/ndoan/PersoProj/cron-send-receipt-spotify`
 
 - save and quit Vim
 
@@ -133,15 +133,15 @@ can be checked from the Terminal by the command `mail`.
 - In Terminal (system or Pycharm), **within the repository folder**:
 
 ```bash
-  docker build --no-cache -t cron-send-facture-spotify -f docker/Dockerfile .
+  docker build --no-cache -t cron-send-receipt-spotify -f docker/Dockerfile .
 ```
 
 5. Reschedule Crontab if needed:
 
-- In `cronjob/cron-send-facture-spotify`, verify the following job:
+- In `cronjob/cron-send-receipt-spotify`, verify the following job:
 
 ```bash
-  59 10 28-31 * * /usr/src/app/main/cron/send-facture-spotify.sh >> /var/log/cron.log 2>&1
+  59 10 28-31 * * /usr/src/app/main/cron/send-receipt-spotify.sh >> /var/log/cron.log 2>&1
 ```
 
 ```cmake
@@ -155,14 +155,14 @@ can be checked from the Terminal by the command `mail`.
 Run the following command:
 
 ```bash
-  docker run -t -d --restart always cron-send-facture-spotify:latest
+  docker run -t -d --restart always cron-send-receipt-spotify:latest
 ```
 
 Or define it as a function or an alias inside a source shell script (for example: `~/.zshrc`):
 
 ```bash
-  run_docker_cron_facture() {
-      docker run -t -d --restart always cron-send-facture-spotify:latest
+  run_docker_cron_receipt() {
+      docker run -t -d --restart always cron-send-receipt-spotify:latest
   }
 ```
 
@@ -178,13 +178,13 @@ GCP service, `Google Cloud Run` for Docker container is perfect with its free ti
 #### Step 1 : Enable `Google Container Registry API` in `Google Cloud Console/APIs and Services`
 #### Step 2 : In local terminal : 
 ```bash
-  docker push <docker_hub_user_name>/cron-send-facture-spotify 
+  docker push <docker_hub_user_name>/cron-send-receipt-spotify 
 ```
 #### Step 3 : In `Cloud Shell` : 
 ```bash
-  docker pull <docker_hub_user_name>/cron-send-facture-spotify:latest 
-  docker tag <docker_hub_user_name>/cron-send-facture-spotify:latest <gcr_region>/<gcp_project_name>/cron-send-facture-spotify
-  docker push <cgr_region>/<gcp_project_name>/cron-send-facture-spotify
+  docker pull <docker_hub_user_name>/cron-send-receipt-spotify:latest 
+  docker tag <docker_hub_user_name>/cron-send-receipt-spotify:latest <gcr_region>/<gcp_project_name>/cron-send-receipt-spotify
+  docker push <cgr_region>/<gcp_project_name>/cron-send-receipt-spotify
 ```
 #### Step 4 : Deploy `Cloud Run` :
 https://cloud.google.com/run/docs/deploying#console

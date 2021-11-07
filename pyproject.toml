@@ -1,5 +1,5 @@
 [tool.poetry]
-name = "automatically-send-facture-spotify"
+name = "cron-send-receipt-spotify"
 version = "0.1.0"
 description = ""
 authors = ["Nhat-Minh DOAN"]

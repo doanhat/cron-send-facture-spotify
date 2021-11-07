@@ -13,7 +13,7 @@ if [ "$TOMORROW" -eq 01 ]; then
   cd /usr/src
   # shellcheck disable=SC2155
   export PYTHONPATH=$PYTHONPATH:$(pwd)
-  . venv/bin/activate && python app/main/send_facture.py
+  . venv/bin/activate && python app/main/send_receipt.py
 	exit
 else
   echo "Tomorrow is not 01"
