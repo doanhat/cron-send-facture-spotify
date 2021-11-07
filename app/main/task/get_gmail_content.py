@@ -111,8 +111,8 @@ def generate_gmail_query(sender, subject, words):
     inf_date = (date.today() - timedelta(5)).isoformat()
     sup_date = (date.today() + timedelta(5)).isoformat()
     # TODO : Comment 2 lines below in prod
-    inf_date = (date(2021, 10, 25) - timedelta(5)).isoformat()
-    sup_date = (date(2021, 10, 25) + timedelta(5)).isoformat()
+    # inf_date = (date(2021, 10, 25) - timedelta(5)).isoformat()
+    # sup_date = (date(2021, 10, 25) + timedelta(5)).isoformat()
     return f"from:({sender}) subject:({subject}) " + ', '.join(words) + f" after:{inf_date} before:{sup_date}"
 
 

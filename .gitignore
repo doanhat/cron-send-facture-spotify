@@ -21,3 +21,16 @@ out/
 lib/
 ../__pycache__/
 __pycache__/
+
+
+# Terraform
+.terraform
+*.tfstate
+*.tfstate.backup
+backend.tf
+provider.tf
+
+
+# OS X
+.history
+.DS_Store
