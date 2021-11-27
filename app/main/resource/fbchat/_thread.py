@@ -76,7 +76,7 @@ class ThreadColor(Enum):
 class Thread(object):
     """Represents a Facebook thread."""
 
-    #: The unique identifier of the thread. Can be used a ``thread_id``. See :ref:`intro_threads` for more info
+    #: The unique identifier of the thread. Can be used a ``THREAD_ID``. See :ref:`intro_threads` for more info
     uid = attr.ib(converter=str)
     #: Specifies the type of thread. Can be used a ``thread_type``. See :ref:`intro_threads` for more info
     type = attr.ib()
