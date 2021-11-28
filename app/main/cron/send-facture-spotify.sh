@@ -8,7 +8,7 @@ elif [[ "$OSTYPE" == "darwin"* ]]; then
   TOMORROW=`date -v+1d +%d`
 fi
 # See if tomorrow's day is some day
-if [ "$TOMORROW" -eq 01 ]; then
+if [ "$TOMORROW" -eq 29 ]; then
   # shellcheck disable=SC2164
   cd /usr/src
   # shellcheck disable=SC2155

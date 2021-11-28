@@ -14,19 +14,21 @@ load_dotenv("env/.env")
 THREAD_ID = int(CONFIG.get("FB_THREAD_ID"))
 PROJECT_ID = CONFIG.get("PROJECT_ID")
 SES_SECRET_ID = CONFIG.get("SES_SECRET_ID")
+LOG_SECRET_ID = CONFIG.get("LOG_SECRET_ID")
 CLIENT = secretmanager.SecretManagerServiceClient()
 
 
 def get_client():
     try:
         # Load the session cookies
-        cookies = json.load(get_secret(CLIENT, PROJECT_ID, SES_SECRET_ID))
+        cookies = json.loads(get_secret(CLIENT, PROJECT_ID, SES_SECRET_ID))
         client = Client('email', 'password', session_cookies=cookies)
     except Exception as e:
         logger.error(e)
         # If it fails, never mind, we'll just login again
-        user = os.getenv('FB_USER_EMAIL_ADDRESS')
-        password = os.getenv('FB_USER_PASSWORD')
+        fb_login = json.loads(get_secret(CLIENT, PROJECT_ID, LOG_SECRET_ID))
+        user = fb_login.get("FB_USER_EMAIL_ADDRESS")
+        password = fb_login.get("FB_USER_PASSWORD")
         client = Client(user, password)
         cookies = client.getSession()
         add_secret(CLIENT, PROJECT_ID, SES_SECRET_ID, json.dumps(cookies))
