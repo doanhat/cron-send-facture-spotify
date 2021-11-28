@@ -4,17 +4,14 @@ import os
 from dotenv import load_dotenv
 from google.cloud import secretmanager
 
-from app.main.config.environment.environment_configuration import CONFIG
+from app.main.config.environment.environment_configuration import PROJECT_ID, SES_SECRET_ID, LOG_SECRET_ID, \
+    THREAD_ID
 from app.main.helper.gcp_helper import get_secret, add_secret
 from app.main.helper.logger import logger
 from app.main.resource.fbchat import Client
 from app.main.resource.fbchat.models import *
 
 load_dotenv("env/.env")
-THREAD_ID = int(CONFIG.get("FB_THREAD_ID"))
-PROJECT_ID = CONFIG.get("PROJECT_ID")
-SES_SECRET_ID = CONFIG.get("SES_SECRET_ID")
-LOG_SECRET_ID = CONFIG.get("LOG_SECRET_ID")
 CLIENT = secretmanager.SecretManagerServiceClient()
 
 

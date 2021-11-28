@@ -1,0 +1,3 @@
+#variable "credentials" {
+#  type = string
+#}

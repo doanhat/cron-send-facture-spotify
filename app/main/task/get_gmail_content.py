@@ -12,7 +12,7 @@ import os
 import base64
 from bs4 import BeautifulSoup
 
-from app.main.config.environment.environment_configuration import CONFIG
+from app.main.config.environment.environment_configuration import PROJECT_ID, TOK_SECRET_ID, CRE_SECRET_ID
 from app.main.helper.logger import logger
 from app.main.helper.gcp_helper import get_secret, add_secret
 
@@ -21,9 +21,6 @@ load_dotenv("env/.env")
 # Define the SCOPES. If modifying it, delete the token.json file.
 
 SCOPES = ['https://www.googleapis.com/auth/gmail.readonly']
-PROJECT_ID = CONFIG.get("PROJECT_ID")
-CRE_SECRET_ID = CONFIG.get("CRE_SECRET_ID")
-TOK_SECRET_ID = CONFIG.get("TOK_SECRET_ID")
 
 CLIENT = secretmanager.SecretManagerServiceClient()
 
