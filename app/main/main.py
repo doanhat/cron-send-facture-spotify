@@ -13,7 +13,7 @@ app = Flask(__name__)
 def send_receipt():
     tomorrow_timestamp = datetime.today() - timedelta(hours=1) + timedelta(days=1)
     logger.debug(tomorrow_timestamp)
-    if tomorrow_timestamp.day:
+    if tomorrow_timestamp.day == 1:
         content = get_first_mail_content(get_google_service(), 'no-reply@spotify.com', 'reçu', ['TVA', 'Total', 'reçu'])
         if content:
             message = f"Facture Spotify : {content} - Message automatique"

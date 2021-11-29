@@ -1,7 +1,12 @@
 locals {
   service_account = "service-send-facture-spotify@send-facture-spotify.iam.gserviceaccount.com"
   project_id = "send-facture-spotify"
+  cre_secret_id = "gmail_credentials"
+  tok_secret_id = "gmail_token"
+  ses_secret_id = "facebook_session"
+  log_secret_id = "facebook_login"
   gcp_region = "europe-west1"
+  imap_url = "imap.gmail.com"
 }
 resource "google_cloud_run_service" "run-send-receipt-spotify" {
   name     = "run-send-receipt-spotify"
@@ -11,13 +16,37 @@ resource "google_cloud_run_service" "run-send-receipt-spotify" {
       service_account_name = "service-send-facture-spotify@send-facture-spotify.iam.gserviceaccount.com"
       containers {
         command = ["./app/main/cron/run-app.sh"]
-        image = "eu.gcr.io/send-facture-spotify/cron-send-receipt-spotify@sha256:6cdbf9f7663d00f9abfdaba739a10b2a8fd8fd89b6eeca3964a0da81dc8c3d44"
+        image = "eu.gcr.io/send-facture-spotify/cron-send-receipt-spotify:latest"
         ports {
           container_port = 8080
         }
         env {
           name = "FB_THREAD_ID"
-          value = "100003782897932"
+          value = "6947468915279299"
+        }
+        env {
+          name = "PROJECT_ID"
+          value = local.project_id
+        }
+        env {
+          name = "CRE_SECRET_ID"
+          value = local.project_id
+        }
+        env {
+          name = "TOK_SECRET_ID"
+          value = local.tok_secret_id
+        }
+        env {
+          name = "SES_SECRET_ID"
+          value = local.ses_secret_id
+        }
+        env {
+          name = "LOG_SECRET_ID"
+          value = local.log_secret_id
+        }
+        env {
+          name = "IMAP_URL"
+          value = local.imap_url
         }
       }
     }

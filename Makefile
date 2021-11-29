@@ -13,3 +13,9 @@ terraform-apply:
 	export GOOGLE_PROJECT=$(PROJECT_NUMBER)
 	export TF_VAR_credentials=$(GOOGLE_APPLICATION_CREDENTIALS)
 	cd terraform/ && terraform apply -auto-approve
+
+.PHONY: terraform-destroy
+terraform-destroy:
+	export GOOGLE_PROJECT=$(PROJECT_NUMBER)
+	export TF_VAR_credentials=$(GOOGLE_APPLICATION_CREDENTIALS)
+	cd terraform/ && terraform apply -destroy
