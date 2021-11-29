@@ -12,14 +12,15 @@ import os
 import base64
 from bs4 import BeautifulSoup
 
-load_dotenv("env/.env")
-# Define the SCOPES. If modifying it, delete the token.json file.
+from app.main.config.environment.environment_configuration import PROJECT_ID, TOK_SECRET_ID, CRE_SECRET_ID
 from app.main.helper.logger import logger
+from app.main.helper.gcp_helper import get_secret, add_secret
+
+load_dotenv("env/.env")
+
+# Define the SCOPES. If modifying it, delete the token.json file.
 
 SCOPES = ['https://www.googleapis.com/auth/gmail.readonly']
-PROJECT_ID = os.getenv('PROJECT_ID')
-CRE_SECRET_ID = os.getenv('CRE_SECRET_ID')
-TOK_SECRET_ID = os.getenv('TOK_SECRET_ID')
 
 CLIENT = secretmanager.SecretManagerServiceClient()
 
@@ -76,37 +77,6 @@ def get_google_service():
     return service
 
 
-def get_secret(client, project_id, secret_id, version_id="latest"):
-    try:
-        # Build the resource name of the secret version.
-        name = f"projects/{project_id}/secrets/{secret_id}/versions/{version_id}"
-
-        # Access the secret version.
-        response = client.access_secret_version(request={"name": name})
-        payload = response.payload.data.decode("UTF-8")
-        logger.info("---")
-        return payload
-    except Exception as e:
-        logger.error(e)
-
-
-def add_secret(client, project_id, secret_id, payload):
-    try:
-        # Build the resource name of the parent secret.
-        parent = client.secret_path(project_id, secret_id)
-
-        # Convert the string payload into a bytes. This step can be omitted if you
-        # pass in bytes instead of a str for the payload argument.
-        payload = payload.encode("UTF-8")
-
-        # Add the secret version.
-        response = client.add_secret_version(
-            request={"parent": parent, "payload": {"data": payload}}
-        )
-    except Exception as e:
-        logger.error(e)
-
-
 def generate_gmail_query(sender, subject, words):
     inf_date = (date.today() - timedelta(5)).isoformat()
     sup_date = (date.today() + timedelta(5)).isoformat()
@@ -129,10 +99,6 @@ def get_html_body(payload: dict):
     soup = BeautifulSoup(decoded_data, "lxml")
     body = soup.body()
     return body
-
-
-def send_message_fb(content):
-    pass
 
 
 def get_first_mail_content(service, sender, subject, words: list):

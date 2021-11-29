@@ -1,31 +1,34 @@
 import json
-import logging
 import os
-from dotenv import load_dotenv, dotenv_values
 
+from dotenv import load_dotenv
+from google.cloud import secretmanager
+
+from app.main.config.environment.environment_configuration import PROJECT_ID, SES_SECRET_ID, LOG_SECRET_ID, \
+    THREAD_ID
+from app.main.helper.gcp_helper import get_secret, add_secret
 from app.main.helper.logger import logger
 from app.main.resource.fbchat import Client
 from app.main.resource.fbchat.models import *
 
 load_dotenv("env/.env")
-user = os.getenv('FB_USER_EMAIL_ADDRESS')
-password = os.getenv('FB_USER_PASSWORD')
-thread_id = int(os.getenv('FB_THREAD_ID'))
+CLIENT = secretmanager.SecretManagerServiceClient()
 
 
 def get_client():
-    cookies = {}
     try:
         # Load the session cookies
-        with open('app/main/config/messenger/session.json', 'r') as f:
-            cookies = json.load(f)
-            client = Client('email', 'password', session_cookies=cookies)
-    except:
+        cookies = json.loads(get_secret(CLIENT, PROJECT_ID, SES_SECRET_ID))
+        client = Client('email', 'password', session_cookies=cookies)
+    except Exception as e:
+        logger.error(e)
         # If it fails, never mind, we'll just login again
+        fb_login = json.loads(get_secret(CLIENT, PROJECT_ID, LOG_SECRET_ID))
+        user = fb_login.get("FB_USER_EMAIL_ADDRESS")
+        password = fb_login.get("FB_USER_PASSWORD")
         client = Client(user, password)
         cookies = client.getSession()
-        with open('app/main/config/messenger/session.json', "w") as f:
-            json.dump(cookies, f)
+        add_secret(CLIENT, PROJECT_ID, SES_SECRET_ID, json.dumps(cookies))
 
     return client
 
@@ -34,15 +37,14 @@ def send_msg_to_thread(message):
     client = get_client()
     logger.info("Login succeed")
     try:
-        logger.info(thread_id)
-        client.send(Message(text=message), thread_id=thread_id, thread_type=ThreadType.USER)
+        logger.info(THREAD_ID)
+        client.send(Message(text=message), thread_id=THREAD_ID, thread_type=ThreadType.USER)
     except FBchatUserError as e:
         logger.error(e)
         try:
-            client.send(Message(text=message), thread_id=thread_id, thread_type=ThreadType.GROUP)
+            client.send(Message(text=message), thread_id=THREAD_ID, thread_type=ThreadType.GROUP)
         except Exception as e:
             raise e
 
-    with open('app/main/config/messenger/session.json', 'w') as f:
-        json.dump(client.getSession(), f)
+    add_secret(CLIENT, PROJECT_ID, SES_SECRET_ID, json.dumps(client.getSession()))
     client.logout()

@@ -60,7 +60,7 @@ class Client(object):
     def uid(self):
         """The ID of the client.
 
-        Can be used as ``thread_id``. See :ref:`intro_threads` for more info.
+        Can be used as ``THREAD_ID``. See :ref:`intro_threads` for more info.
         """
         return self._uid
 
@@ -278,7 +278,7 @@ class Client(object):
     """
 
     def _forcedFetch(self, thread_id, mid):
-        params = {"thread_and_message_id": {"thread_id": thread_id, "message_id": mid}}
+        params = {"thread_and_message_id": {"THREAD_ID": thread_id, "message_id": mid}}
         (j,) = self.graphql_requests(_graphql.from_doc_id("1768656253222505", params))
         return j
 
@@ -1422,7 +1422,7 @@ class Client(object):
         message_id, thread_id = self._doSendRequest(data, get_thread_id=True)
         if not thread_id:
             raise FBchatException(
-                "Error when creating group: No thread_id could be found"
+                "Error when creating group: No THREAD_ID could be found"
             )
         return thread_id
 
@@ -1575,7 +1575,7 @@ class Client(object):
         """
         thread_id, thread_type = self._getThread(thread_id, None)
 
-        data = {"thread_image_id": image_id, "thread_id": thread_id}
+        data = {"thread_image_id": image_id, "THREAD_ID": thread_id}
 
         j = self._payload_post("/messaging/set_thread_image/?dpr=1", data)
         return image_id
@@ -1630,7 +1630,7 @@ class Client(object):
                 title, thread_id, thread_id=thread_id, thread_type=thread_type
             )
 
-        data = {"thread_name": title, "thread_id": thread_id}
+        data = {"thread_name": title, "THREAD_ID": thread_id}
         j = self._payload_post("/messaging/set_thread_name/?dpr=1", data)
 
     def changeNickname(
@@ -1736,7 +1736,7 @@ class Client(object):
             "event_type": "EVENT",
             "event_time": plan.time,
             "title": plan.title,
-            "thread_id": thread_id,
+            "THREAD_ID": thread_id,
             "location_id": plan.location_id or "",
             "location_name": plan.location or "",
             "acontext": ACONTEXT,
@@ -1839,7 +1839,7 @@ class Client(object):
             poll_id: ID of the poll to update vote
             option_ids: List of the option IDs to vote
             new_options: List of the new option names
-            thread_id: User/Group ID to change status in. See :ref:`intro_threads`
+            THREAD_ID: User/Group ID to change status in. See :ref:`intro_threads`
             thread_type (ThreadType): See :ref:`intro_threads`
 
         Raises:
@@ -2413,7 +2413,7 @@ class Client(object):
                     for thr in delta.get("threadKeys")
                 ]
 
-            # thread_id, thread_type = getThreadIdAndThreadType(delta)
+            # THREAD_ID, thread_type = getThreadIdAndThreadType(delta)
             self.onMarkedSeen(
                 threads=threads,
                 seen_ts=seen_ts,

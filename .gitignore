@@ -3,7 +3,7 @@ app/main/config/google/API/token.pickle
 app/main/config/google/API/token.json
 app/test/cron/test.txt
 app/main/config/messenger/session.json
-env/.env
+
 # OS X
 .history
 .DS_Store
@@ -27,6 +27,7 @@ __pycache__/
 .terraform
 *.tfstate
 *.tfstate.backup
+*.lock.hcl
 backend.tf
 provider.tf
 
