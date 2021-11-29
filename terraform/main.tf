@@ -15,7 +15,7 @@ resource "google_cloud_run_service" "run-send-receipt-spotify" {
     spec {
       service_account_name = "service-send-facture-spotify@send-facture-spotify.iam.gserviceaccount.com"
       containers {
-        command = ["./app/main/cron/run-app.sh"]
+        command = ["./app/main/script/run-app.sh"]
         image = "eu.gcr.io/send-facture-spotify/cron-send-receipt-spotify:latest"
         ports {
           container_port = 8080
