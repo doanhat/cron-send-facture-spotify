@@ -71,20 +71,22 @@ Open Terminal (system or Pycharm), **within the repository folder**:
         - Grant roles for the service account: `Cloud Run Admin`, `Cloud Scheduler Admin`, `Service Account user`
           , `Secret Manager Accessor and Version Adder`
     3. Set up remote credentials, perform these additional steps:
-         1. In `Google Cloud Console/APIs and Services/Credentials`, add a `Service Account` for the project if not yet
-            created
-         2. In `Google Cloud Console/Security/Secret Manager`, add this secret :
-             1. name: `facebook_login`, value:
-                   ```
-                   {
-                      "FB_USER_EMAIL_ADDRESS":<fb_email>,
-                      "FB_USER_PASSWORD":<fb_password>
-                   }
-                   ```
-             2. At this moment, two secrets have been created, which are `facebook_login` and `gmail_credentials`, after
-                the first run of Cloud Run, there will be also `facebook_session` and `gmail_token` generated, which will be reused for the next run
+        1. In `Google Cloud Console/APIs and Services/Credentials`, add a `Service Account` for the project if not yet
+           created
+        2. In `Google Cloud Console/Security/Secret Manager`, add this secret :
+            1. name: `facebook_login`, value:
+                  ```
+                  {
+                     "FB_USER_EMAIL_ADDRESS":<fb_email>,
+                     "FB_USER_PASSWORD":<fb_password>
+                  }
+                  ```
+            2. At this moment, two secrets have been created, which are `facebook_login` and `gmail_credentials`, after
+               the first run of Cloud Run, there will be also `facebook_session` and `gmail_token` generated, which will
+               be reused for the next run
 
 2. Build image Docker:
+
 - In Terminal (system or Pycharm), **within the repository folder**:
 
 ```bash
@@ -92,7 +94,9 @@ Open Terminal (system or Pycharm), **within the repository folder**:
   docker tag cron-send-receipt-spotify:<version> <gcp_region>/<gcp_project_name>/cron-send-receipt-spotify
   docker push <gcp_region>/<gcp_project_name>/cron-send-receipt-spotify 
 ```
+
 3. Deploy GCP resources with terraform:
+
 - Define environment variables in `terraform/main.tf`, in `locals`:
    ```terraform
    locals {
@@ -105,11 +109,12 @@ Open Terminal (system or Pycharm), **within the repository folder**:
       log_secret_id = "facebook_login"
       gcp_region = "europe-west1"
       imap_url = "imap.gmail.com"
+      ...
   }
    ```
   > :information_source: `<messenger_group_id>` example: `6947468915279299` is the id of https://www.facebook.com/messages/t/6947468915279299
 
-- Verify the job `schedule` :  
+- Verify the job `schedule` :
   ```terraform
    resource "google_cloud_scheduler_job" "scheduler-send-receipt-spotify" {
       name             = "monthly-report-spotify-receipt"
@@ -118,7 +123,7 @@ Open Terminal (system or Pycharm), **within the repository folder**:
       time_zone        = "CET"
       http_target {
          http_method = "GET"
-         uri = google_cloud_run_service.run-send-receipt-spotify.status[0].url
+         uri         = "${google_cloud_run_service.run-send-receipt-spotify.status[0].url}/?sender=${local.email_sender}&subject=${local.email_subject}&key_words=${local.email_key_words}"
          oidc_token {
             service_account_email = local.service_account
         }
@@ -128,10 +133,12 @@ Open Terminal (system or Pycharm), **within the repository folder**:
   ```cmake
      which means: At 10:59 on every day-of-month from 28 through 31, run the script
   ```
-  :information_source: Check out [crontab.guru](https://crontab.guru/#59_10_28-31_*_*) for more cron schedule expressions
+  :information_source: Check out [crontab.guru](https://crontab.guru/#59_10_28-31_*_*) for more cron schedule
+  expressions
 
 - In Terminal (system or Pycharm), **within the repository folder**:
-  - ⚠️ Replace `PROJECT_NUMBER` with current gcp project number
+    - ⚠️ Replace `PROJECT_NUMBER` with current gcp project number
+
 ```bash
   make terraform-init
   make terraform-plan
