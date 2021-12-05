@@ -81,8 +81,8 @@ Open Terminal (system or Pycharm), **within the repository folder**:
                       "FB_USER_PASSWORD":<fb_password>
                    }
                    ```
-             2. At this moment, two secrets has been created, which are `facebook_login` and `gmail_credentials`, after
-                the first run of Cloud Run, there will be also `facebook_session` and `gmail_token` created, which will be reused for the next run
+             2. At this moment, two secrets have been created, which are `facebook_login` and `gmail_credentials`, after
+                the first run of Cloud Run, there will be also `facebook_session` and `gmail_token` generated, which will be reused for the next run
 
 2. Build image Docker:
 - In Terminal (system or Pycharm), **within the repository folder**:
