@@ -161,7 +161,7 @@ class Message(object):
             data["body"] = self.text
 
         for i, mention in enumerate(self.mentions):
-            data["profile_xmd[{}][id]".format(i)] = mention.thread_id
+            data["profile_xmd[{}][id]".format(i)] = mention.THREAD_ID
             data["profile_xmd[{}][offset]".format(i)] = mention.offset
             data["profile_xmd[{}][length]".format(i)] = mention.length
             data["profile_xmd[{}][type]".format(i)] = "p"
