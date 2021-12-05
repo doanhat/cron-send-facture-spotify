@@ -1,5 +1,6 @@
 locals {
   service_account = "service-send-facture-spotify@send-facture-spotify.iam.gserviceaccount.com"
+  thread_id = "6947468915279299"
   project_id = "send-facture-spotify"
   cre_secret_id = "gmail_credentials"
   tok_secret_id = "gmail_token"
@@ -22,7 +23,7 @@ resource "google_cloud_run_service" "run-send-receipt-spotify" {
         }
         env {
           name = "FB_THREAD_ID"
-          value = "6947468915279299"
+          value = local.thread_id
         }
         env {
           name = "PROJECT_ID"
