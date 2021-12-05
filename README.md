@@ -140,29 +140,7 @@ Open Terminal (system or Pycharm), **within the repository folder**:
 
 ### 5. Voilà, all set !!
 
-#### Step 1 : Enable `Google Container Registry API` in `Google Cloud Console/APIs and Services`
-
-#### Step 2 : In local terminal :
-
-```bash
-  docker push <docker_hub_user_name>/script-send-receipt-spotify 
-```
-
-#### Step 3 : In `Cloud Shell` :
-
-```bash
-  docker pull <docker_hub_user_name>/script-send-receipt-spotify:latest 
-  docker tag <docker_hub_user_name>/script-send-receipt-spotify:latest <gcr_region>/<gcp_project_name>/script-send-receipt-spotify
-  docker push <cgr_region>/<gcp_project_name>/script-send-receipt-spotify
-```
-
-#### Step 4 : Deploy `Cloud Run` :
-
-https://cloud.google.com/run/docs/deploying#console
-
-:warning: set minimum instances to 1 because the container always need to be up
-
-### 7. Improvement :
+### 6. Improvement :
 
 There's always enough rooms for improvement, we can take advantage of this project to learn :
 
