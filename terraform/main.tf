@@ -8,6 +8,10 @@ locals {
   log_secret_id = "facebook_login"
   gcp_region = "europe-west1"
   imap_url = "imap.gmail.com"
+  # gmail content
+  email_sender = "service@paypal.fr"
+  email_subject = "reçu, Spotify AB"
+  key_words = "transaction, support@spotify.com"
 }
 resource "google_cloud_run_service" "run-send-receipt-spotify" {
   name     = "run-send-receipt-spotify"
@@ -65,7 +69,7 @@ resource "google_cloud_scheduler_job" "scheduler-send-receipt-spotify" {
   time_zone        = "CET"
   http_target {
     http_method = "GET"
-      uri = google_cloud_run_service.run-send-receipt-spotify.status[0].url
+      uri = "${google_cloud_run_service.run-send-receipt-spotify.status[0].url}/?sender=${local.email_sender}&subject=${local.email_subject}&key_words=${local.email_key_words}"
     oidc_token {
       service_account_email = local.service_account
     }

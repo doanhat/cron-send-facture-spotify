@@ -1,20 +1,20 @@
+import base64
 import json
 from datetime import date, timedelta
 
-from dotenv import load_dotenv, dotenv_values
+from bs4 import BeautifulSoup
+from dotenv import load_dotenv
 from google.auth.exceptions import RefreshError
+from google.auth.transport.requests import Request
 from google.cloud import secretmanager
 from google.oauth2.credentials import Credentials
-from googleapiclient.discovery import build
 from google_auth_oauthlib.flow import InstalledAppFlow
-from google.auth.transport.requests import Request
-import os
-import base64
-from bs4 import BeautifulSoup
+from googleapiclient.discovery import build
 
 from app.main.config.environment.environment_configuration import PROJECT_ID, TOK_SECRET_ID, CRE_SECRET_ID
-from app.main.helper.logger import logger
+from app.main.data.GmailData import GmailData
 from app.main.helper.gcp_helper import get_secret, add_secret
+from app.main.helper.logger import logger
 
 load_dotenv("env/.env")
 
@@ -77,13 +77,14 @@ def get_google_service():
     return service
 
 
-def generate_gmail_query(sender, subject, words):
+def generate_gmail_query(sender, subject, key_words):
     inf_date = (date.today() - timedelta(5)).isoformat()
     sup_date = (date.today() + timedelta(5)).isoformat()
     # TODO : Comment 2 lines below in prod
     # inf_date = (date(2021, 10, 25) - timedelta(5)).isoformat()
     # sup_date = (date(2021, 10, 25) + timedelta(5)).isoformat()
-    return f"from:({sender}) subject:({subject}) " + ', '.join(words) + f" after:{inf_date} before:{sup_date}"
+    return f"from:({','.join(sender)}) subject:({','.join(subject)}) " + ','.join(
+        key_words) + f" after:{inf_date} before:{sup_date}"
 
 
 def get_html_body(payload: dict):
@@ -96,14 +97,18 @@ def get_html_body(payload: dict):
 
     # Now, the data obtained is in lxml. So, we will parse
     # it with BeautifulSoup library
-    soup = BeautifulSoup(decoded_data, "lxml")
-    body = soup.body()
-    return body
+    soup = BeautifulSoup(decoded_data, "lxml").find_all("p")
+    body = []
+    for b in soup:
+        text = b.text.strip()
+        if text:
+            body.append(text)
+    return body[:-3]
 
 
-def get_first_mail_content(service, sender, subject, words: list):
+def get_mail_contents(service, sender, subject, key_words):
     received_date = ""
-    query = generate_gmail_query(sender, subject, words)
+    query = generate_gmail_query(sender, subject, key_words)
     # request a list of all the messages
     result = service.users().messages().list(userId='me', maxResults=3, q=query, includeSpamTrash=True).execute()
 
@@ -115,6 +120,7 @@ def get_first_mail_content(service, sender, subject, words: list):
     # logger.info()
     # iterate through all the messages
     try:
+        gmail_list = []
         for msg in messages:
             # Get the message from its id
             txt = service.users().messages().get(userId='me', id=msg['id']).execute()
@@ -123,26 +129,28 @@ def get_first_mail_content(service, sender, subject, words: list):
                 # Get value of 'payload' from dictionary 'txt'
                 payload = txt['payload']
                 headers = payload['headers']
-
+                body = get_html_body(payload)
                 # Look for Subject and Sender Email in the headers
-                for d in headers:
-                    if d['name'] == 'Subject':
-                        subject = d['value']
-                    if d['name'] == 'From':
-                        sender = d['value']
-                    if d['name'] == 'Date':
-                        received_date = d['value']
+                for h in headers:
+                    if h['name'] == 'Subject':
+                        subject = h['value']
+                    if h['name'] == 'From':
+                        sender = h['value']
+                    if h['name'] == 'Date':
+                        received_date = h['value']
 
-                content = txt['snippet']
+                content = "\n".join(body)
 
                 # Printing the subject, sender's email and message
                 logger.info(f"Subject: {subject}")
                 logger.info(f"From: {sender}")
                 logger.info(f"Date: {received_date}")
                 logger.info(f"Content: {content}")
-                return content
+                gmail_data = GmailData(subject, sender, received_date, content)
+                gmail_list.append(gmail_data)
             except RuntimeError as re:
                 logger.error(f"Error while getting email content : {re}")
+        return gmail_list
     except TypeError as te:
         logger.error(f"Error while getting emails : {te}")
         return ""
