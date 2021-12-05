@@ -1,5 +1,3 @@
-⚠️ Outdated !!!
-
 # Cloud automation self-learning project : Cron-send-receipt-spotify
 
 [![hackmd-github-sync-badge](https://hackmd.io/DlraECW4Q_imvwXGCAM1Ag/badge)](https://hackmd.io/DlraECW4Q_imvwXGCAM1Ag)
