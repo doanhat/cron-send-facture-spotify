@@ -78,8 +78,8 @@ def get_google_service():
 
 
 def generate_gmail_query(sender, subject, key_words):
-    inf_date = (date.today() - timedelta(5)).isoformat()
-    sup_date = (date.today() + timedelta(5)).isoformat()
+    inf_date = (date.today() - timedelta(10)).isoformat()
+    sup_date = (date.today() + timedelta(10)).isoformat()
     # TODO : Comment 2 lines below in prod
     # inf_date = (date(2021, 10, 25) - timedelta(5)).isoformat()
     # sup_date = (date(2021, 10, 25) + timedelta(5)).isoformat()
@@ -97,13 +97,16 @@ def get_html_body(payload: dict):
 
     # Now, the data obtained is in lxml. So, we will parse
     # it with BeautifulSoup library
-    soup = BeautifulSoup(decoded_data, "lxml").find_all("p")
+    soup = BeautifulSoup(decoded_data, "lxml")
+    paragraphs = soup.find_all("span")
     body = []
-    for b in soup:
-        text = b.text.strip()
+    for b in paragraphs:
+        text = b.text.strip().split("\n")
+        text = "\n".join(list(filter(None, text)))
         if text:
             body.append(text)
-    return body[:-3]
+    body = list(dict.fromkeys(body))
+    return body[1:5]
 
 
 def get_mail_contents(service, sender, subject, key_words):

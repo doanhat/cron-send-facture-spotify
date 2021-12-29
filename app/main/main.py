@@ -16,7 +16,7 @@ def send_receipt():
     logger.info(args)
     tomorrow_timestamp = datetime.today() - timedelta(hours=1) + timedelta(days=1)
     logger.debug(tomorrow_timestamp)
-    if tomorrow_timestamp.day == 6:
+    if tomorrow_timestamp.day == 1:
         data = \
             get_mail_contents(get_google_service(), args.get('sender'), args.get('subject'), args.get('key_words'))
 
