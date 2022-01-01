@@ -38,11 +38,11 @@ def send_msg_to_thread(message):
     logger.info("Login succeed")
     try:
         logger.info(THREAD_ID)
-        client.send(Message(text=message), thread_id=THREAD_ID, thread_type=ThreadType.USER)
-    except FBchatUserError as e:
+        client.send(Message(text=message), thread_id=THREAD_ID, thread_type=ThreadType.GROUP)
+    except FBchatFacebookError as e:
         logger.error(e)
         try:
-            client.send(Message(text=message), thread_id=THREAD_ID, thread_type=ThreadType.GROUP)
+            client.send(Message(text=message), thread_id=THREAD_ID, thread_type=ThreadType.USER)
         except Exception as e:
             raise e
 
