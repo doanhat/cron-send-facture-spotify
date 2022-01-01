@@ -13,13 +13,14 @@ app = Flask(__name__)
 @app.route("/")
 def send_receipt():
     args = request.args.to_dict(flat=False)
+    logger.info("Begin app")
     logger.info(args)
     tomorrow_timestamp = datetime.today() - timedelta(hours=1) + timedelta(days=1)
-    logger.debug(tomorrow_timestamp)
+    logger.info(f"Tomorrow : {tomorrow_timestamp}")
     if tomorrow_timestamp.day == 1:
         data = \
             get_mail_contents(get_google_service(), args.get('sender'), args.get('subject'), args.get('key_words'))
-
+        logger.info(data)
         if data:
             data = data[0]
             message = f"Message automatique : " \
@@ -29,9 +30,13 @@ def send_receipt():
             send_msg_to_thread(message)
             return message
         else:
-            return "No receipt"
+            message = "No receipt"
+            logger.info(message)
+            return message
     else:
-        return "Not until 01 !"
+        message = "Tomorrow is not 1"
+        logger.info(message)
+        return message
 
 
 if __name__ == "__main__":

@@ -10,8 +10,8 @@ locals {
   imap_url        = "imap.gmail.com"
   # gmail content
   email_sender    = "service@paypal.fr"
-  email_subject   = "reçu, Spotify AB"
-  email_key_words = "transaction, support@spotify.com"
+  email_subject   = "Spotify AB"
+  email_key_words = "transaction,support@spotify.com"
 }
 resource "google_cloud_run_service" "run-send-receipt-spotify" {
   name     = "run-send-receipt-spotify"
